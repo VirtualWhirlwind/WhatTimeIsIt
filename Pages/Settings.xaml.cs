@@ -41,7 +41,25 @@ namespace WhatTimeIsIt.Pages
         {
             InitializeComponent();
 
-            ViewModel = viewModel ?? new SettingsViewModel();
+            ViewModel = viewModel ?? SettingsViewModel.Load();
+
+            Setup();
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.instance.ToggleSettings();
+        }
+
+        private void Save_Click(object sender, RoutedEventArgs e)
+        {
+            ViewModel.Save();
+            MainWindow.instance.ToggleSettings();
+        }
+
+        public void Setup()
+        {
+            ViewModel.Setup();
         }
     }
 }

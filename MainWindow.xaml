@@ -31,13 +31,13 @@
         
         <!-- Region Top Most -->
         <Grid Grid.Row="0" Grid.RowSpan="3">
-            <Frame Name="SettingsHolder" NavigationUIVisibility="Hidden" Visibility="{Binding SettingsVisibility}" />
-
             <Viewbox HorizontalAlignment="Right" VerticalAlignment="Top" Width="20" Height="20">
                 <Border Background="LightBlue" CornerRadius="15" MouseUp="Settings_MouseUp">
                     <Image Source="Resources/ic_build_white_48dp.png" IsHitTestVisible="False" />
                 </Border>
             </Viewbox>
+
+            <Frame Name="SettingsHolder" NavigationUIVisibility="Hidden" Visibility="{Binding SettingsVisibility}" />
         </Grid>
         <!-- EndRegion -->
     </Grid>

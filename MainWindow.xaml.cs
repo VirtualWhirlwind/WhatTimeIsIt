@@ -23,6 +23,8 @@ namespace WhatTimeIsIt
     public partial class MainWindow : Window
     {
         #region Properties
+        public static MainWindow instance { get; private set; }
+
         public MainWindowViewModel ViewModel
         {
             get
@@ -54,17 +56,21 @@ namespace WhatTimeIsIt
         #region Events
         private void Settings_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            ViewModel.IsSettingsVisible = !ViewModel.IsSettingsVisible;
+            ToggleSettings();
         }
         #endregion
 
         #region Methods
         protected void SetUp()
         {
-            //ReadOnlyCollection<TimeZoneInfo> tzCollection;
-            //tzCollection = TimeZoneInfo.GetSystemTimeZones();
+            instance = this;
 
             SettingsHolder.Navigate(ViewModel.SettingsPage);
+        }
+
+        public void ToggleSettings()
+        {
+            ViewModel.IsSettingsVisible = !ViewModel.IsSettingsVisible;
         }
         #endregion
     }

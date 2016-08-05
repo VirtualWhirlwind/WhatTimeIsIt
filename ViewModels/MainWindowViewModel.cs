@@ -40,8 +40,7 @@ namespace WhatTimeIsIt.ViewModels
         #region Construct / Destruct
         public MainWindowViewModel()
         {
-            SettingsPage = new Pages.Settings();
-            SettingsPage.ViewModel = SettingsViewModel.Load();
+            SettingsPage = new Pages.Settings(SettingsViewModel.Load());
         }
         #endregion
     }

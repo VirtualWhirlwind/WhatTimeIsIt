@@ -27,6 +27,9 @@ namespace WhatTimeIsIt.ViewModels
 
         protected ObservableCollection<string> _Clocks = new ObservableCollection<string>();
         protected ObservableCollection<string> _TimeConversions = new ObservableCollection<string>();
+
+        protected ObservableCollection<TimeZoneInfo> _ClocksAvailable = new ObservableCollection<TimeZoneInfo>();
+        protected ObservableCollection<TimeZoneInfo> _TimeConversionsAvailable = new ObservableCollection<TimeZoneInfo>();
         #endregion
 
         #region Properties
@@ -126,11 +129,49 @@ namespace WhatTimeIsIt.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        [JsonIgnore]
+        public ReadOnlyCollection<TimeZoneInfo> TimezonesAvailable { get; set; }
+
+        [JsonIgnore]
+        public ObservableCollection<TimeZoneInfo> ClocksAvailable
+        {
+            get
+            {
+                return _ClocksAvailable;
+            }
+            set
+            {
+                if (_ClocksAvailable != value)
+                {
+                    _ClocksAvailable = value ?? new ObservableCollection<TimeZoneInfo>();
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public ObservableCollection<TimeZoneInfo> TimeConversionsAvailable
+        {
+            get
+            {
+                return _TimeConversionsAvailable;
+            }
+            set
+            {
+                if (_TimeConversionsAvailable != value)
+                {
+                    _TimeConversionsAvailable = value ?? new ObservableCollection<TimeZoneInfo>();
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region Construct / Destruct
         public SettingsViewModel()
         {
+            TimezonesAvailable = TimeZoneInfo.GetSystemTimeZones();
+
             if (instance == null)
             {
                 instance = this;
@@ -143,8 +184,14 @@ namespace WhatTimeIsIt.ViewModels
         #endregion
 
         #region Methods
+        public void Setup()
+        {
+            TimezonesAvailable.ToList().ForEach(e => ClocksAvailable.Add(e));
+        }
+
         public static SettingsViewModel Load()
         {
+            instance = null;
             string SettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SETTINGS_FOLDER, SETTINGS_FILE);
             try
             {
@@ -160,7 +207,7 @@ namespace WhatTimeIsIt.ViewModels
             return new SettingsViewModel();
         }
 
-        protected void Save()
+        public void Save()
         {
             string SettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SETTINGS_FOLDER);
             try

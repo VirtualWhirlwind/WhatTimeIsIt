@@ -6,9 +6,62 @@
       xmlns:local="clr-namespace:WhatTimeIsIt.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300"
-      Title="Settings" Background="Blue">
+      Title="Settings"
+      Background="White">
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="5" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="25" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="25" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Region Row 0, Clocks -->
+        <ListView Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ClocksAvailable}">
+            
+        </ListView>
+        <Grid Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+            <StackPanel Orientation="Vertical">
+                <Button Content="--&gt;" />
+                <Button Content="&lt;--" />
+            </StackPanel>
+        </Grid>
+        <ListView Grid.Row="0" Grid.Column="2" />
+        <!-- EndRegion -->
+
+        <!-- Region Row 2, Comparisons -->
+        <ListView Grid.Row="2" Grid.Column="0" />
+        <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+            <StackPanel Orientation="Vertical">
+                <Button Content="--&gt;" />
+                <Button Content="&lt;--" />
+            </StackPanel>
+        </Grid>
+        <ListView Grid.Row="2" Grid.Column="2" />
+        <!-- EndRegion -->
         
+        <!-- Region Row 3, Buttons -->
+        <Grid Grid.Row="3" Grid.ColumnSpan="4">
+            <Button HorizontalAlignment="Left" Width="75" Background="#FF5555" Click="Cancel_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/WhatTimeIsIt;component/Resources/ic_thumb_down_black_48dp.png" />
+                    <TextBlock Text="Cancel" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+            <Button HorizontalAlignment="Right" Width="75" Background="#55FF55" Click="Save_Click">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/WhatTimeIsIt;component/Resources/ic_thumb_up_black_48dp.png" />
+                    <TextBlock Text="Save" VerticalAlignment="Center" />
+                </StackPanel>
+            </Button>
+        </Grid>
+        <!-- EndRegion -->
     </Grid>
 </Page>
