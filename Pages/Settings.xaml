@@ -24,31 +24,41 @@
         </Grid.ColumnDefinitions>
 
         <!-- Region Row 0, Clocks -->
-        <ListView Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ClocksAvailable}">
-            
-        </ListView>
+        <ListView Name="SourceClocks" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ClocksAvailable}" SelectionChanged="ClocksAvailable_SelectionChanged" />
         <Grid Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center">
             <StackPanel Orientation="Vertical">
-                <Button Content="--&gt;" />
-                <Button Content="&lt;--" />
+                <Button Content="--&gt;" IsEnabled="{Binding ClockAddEnabled}" Click="ClockAdd_Click" />
+                <Button Content="&lt;--" IsEnabled="{Binding ClockRemoveEnabled}" Click="ClockRemove_Click" />
             </StackPanel>
         </Grid>
-        <ListView Grid.Row="0" Grid.Column="2" />
+        <ListView Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Clocks}" SelectionChanged="Clocks_SelectionChanged" />
+        <Grid Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+            <StackPanel Orientation="Vertical">
+                <Button Content="/\" IsEnabled="{Binding ClockUpEnabled}" />
+                <Button Content="\/" IsEnabled="{Binding ClockDownEnabled}" />
+            </StackPanel>
+        </Grid>
         <!-- EndRegion -->
 
         <!-- Region Row 2, Comparisons -->
-        <ListView Grid.Row="2" Grid.Column="0" />
+        <ListView Name="SourceConversions" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding ConversionsAvailable}" SelectionChanged="ConversionsAvailable_SelectionChanged" />
         <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center">
             <StackPanel Orientation="Vertical">
-                <Button Content="--&gt;" />
-                <Button Content="&lt;--" />
+                <Button Content="--&gt;" IsEnabled="{Binding ConversionAddEnabled}" Click="ConversionAdd_Click" />
+                <Button Content="&lt;--" IsEnabled="{Binding ConversionRemoveEnabled}" Click="ConversionRemove_Click" />
             </StackPanel>
         </Grid>
-        <ListView Grid.Row="2" Grid.Column="2" />
+        <ListView Grid.Row="2" Grid.Column="2" ItemsSource="{Binding Conversions}" SelectionChanged="Conversions_SelectionChanged" />
+        <Grid Grid.Row="2" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+            <StackPanel Orientation="Vertical">
+                <Button Content="/\" IsEnabled="{Binding ConversionUpEnabled}" />
+                <Button Content="\/" IsEnabled="{Binding ConversionDownEnabled}" />
+            </StackPanel>
+        </Grid>
         <!-- EndRegion -->
         
-        <!-- Region Row 3, Buttons -->
-        <Grid Grid.Row="3" Grid.ColumnSpan="4">
+        <!-- Region Row 4, Buttons -->
+        <Grid Grid.Row="4" Grid.ColumnSpan="4">
             <Button HorizontalAlignment="Left" Width="75" Background="#FF5555" Click="Cancel_Click">
                 <StackPanel Orientation="Horizontal">
                     <Image Source="/WhatTimeIsIt;component/Resources/ic_thumb_down_black_48dp.png" />

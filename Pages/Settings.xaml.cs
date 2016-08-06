@@ -16,12 +16,15 @@ using WhatTimeIsIt.ViewModels;
 
 namespace WhatTimeIsIt.Pages
 {
+	// TODO: Add drag and drop capabilities
+
     /// <summary>
     /// Interaction logic for Settings.xaml
     /// </summary>
     public partial class Settings : Page
     {
-        public SettingsViewModel ViewModel
+		#region Properties
+		public SettingsViewModel ViewModel
         {
             get
             {
@@ -32,8 +35,10 @@ namespace WhatTimeIsIt.Pages
                 this.DataContext = value;
             }
         }
+		#endregion
 
-        public Settings() : this(viewModel: null)
+		#region Construct / Destruct
+		public Settings() : this(viewModel: null)
         {
         }
 
@@ -45,8 +50,10 @@ namespace WhatTimeIsIt.Pages
 
             Setup();
         }
+		#endregion
 
-        private void Cancel_Click(object sender, RoutedEventArgs e)
+		#region Events
+		private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.instance.ToggleSettings();
         }
@@ -57,9 +64,66 @@ namespace WhatTimeIsIt.Pages
             MainWindow.instance.ToggleSettings();
         }
 
-        public void Setup()
+		private void ClocksAvailable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			ViewModel.ClockAddEnabled = ((ListView)e.Source).SelectedItems.Count > 0;
+		}
+
+		private void ClockAdd_Click(object sender, RoutedEventArgs e)
+		{
+			if (SourceClocks.SelectedItems.Count > 0)
+			{
+				foreach (var OneItem in SourceClocks.SelectedItems)
+				{
+					ViewModel.Clocks.Add(OneItem.ToString());
+				}
+				ViewModel.Setup();
+			}
+		}
+
+		private void ClockRemove_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void Clocks_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+
+		}
+
+		private void ConversionsAvailable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			ViewModel.ConversionAddEnabled = ((ListView)e.Source).SelectedItems.Count > 0;
+		}
+
+		private void ConversionAdd_Click(object sender, RoutedEventArgs e)
+		{
+			if (SourceConversions.SelectedItems.Count > 0)
+			{
+				foreach (var OneItem in SourceConversions.SelectedItems)
+				{
+					ViewModel.Conversions.Add(OneItem.ToString());
+				}
+				ViewModel.Setup();
+			}
+		}
+
+		private void ConversionRemove_Click(object sender, RoutedEventArgs e)
+		{
+
+		}
+
+		private void Conversions_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+
+		}
+		#endregion
+
+		#region Methods
+		public void Setup()
         {
             ViewModel.Setup();
         }
-    }
+		#endregion
+	}
 }
