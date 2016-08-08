@@ -5,12 +5,13 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WhatTimeIsIt.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
+      d:DesignHeight="300" d:DesignWidth="500"
       Title="Settings"
       Background="White">
 
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
             <RowDefinition Height="*" />
             <RowDefinition Height="5" />
             <RowDefinition Height="*" />
@@ -23,36 +24,60 @@
             <ColumnDefinition Width="25" />
         </Grid.ColumnDefinitions>
 
-        <!-- Region Row 0, Clocks -->
-        <ListView Name="SourceClocks" Grid.Row="0" Grid.Column="0" ItemsSource="{Binding ClocksAvailable}" SelectionChanged="ClocksAvailable_SelectionChanged" />
-        <Grid Grid.Row="0" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        <!-- Region Row 0, Formats -->
+        <TextBlock Text="Date Format:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" />
+        <ComboBox ItemsSource="{Binding DateOptions}" SelectedValuePath="Key" DisplayMemberPath="Value" SelectedValue="{Binding DateFormat}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="72,0,0,0" />
+
+        <TextBlock Text="Time Format:" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" />
+        <ComboBox ItemsSource="{Binding TimeOptions}" SelectedValuePath="Key" DisplayMemberPath="Value" SelectedValue="{Binding TimeFormat}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="72,0,0,0" />
+        <!-- EndRegion -->
+        
+        <!-- Region Row 1, Clocks -->
+        <ListView Name="SourceClocks" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding ClocksAvailable}" SelectionChanged="ClocksAvailable_SelectionChanged" />
+        <Grid Grid.Row="1" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center">
             <StackPanel Orientation="Vertical">
-                <Button Content="--&gt;" IsEnabled="{Binding ClockAddEnabled}" Click="ClockAdd_Click" />
-                <Button Content="&lt;--" IsEnabled="{Binding ClockRemoveEnabled}" Click="ClockRemove_Click" />
+                <Button IsEnabled="{Binding ClockAddEnabled}" Click="ClockAdd_Click" Background="#AAFFAA">
+                    <Image Source="/WhatTimeIsIt;component/Resources/ic_keyboard_arrow_right_black_48dp.png" />
+                </Button>
+                <Button IsEnabled="{Binding ClockRemoveEnabled}" Click="ClockRemove_Click" Background="#FFAAAA">
+                    <Image Source="/WhatTimeIsIt;component/Resources/ic_keyboard_arrow_left_black_48dp.png" />
+                </Button>
             </StackPanel>
         </Grid>
-        <ListView Grid.Row="0" Grid.Column="2" ItemsSource="{Binding Clocks}" SelectionChanged="Clocks_SelectionChanged" />
-        <Grid Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        <ListView Name="DestinationClocks" Grid.Row="1" Grid.Column="2" ItemsSource="{Binding Clocks}" SelectionChanged="DestinationClocks_SelectionChanged" />
+        <Grid Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
             <StackPanel Orientation="Vertical">
-                <Button Content="/\" IsEnabled="{Binding ClockUpEnabled}" />
-                <Button Content="\/" IsEnabled="{Binding ClockDownEnabled}" />
+                <Button IsEnabled="{Binding ClockUpEnabled}" Click="ClockUp_Click">
+                    <Image Source="/WhatTimeIsIt;component/Resources/ic_keyboard_arrow_up_black_48dp.png" />
+                </Button>
+                <Button IsEnabled="{Binding ClockDownEnabled}" Click="ClockDown_Click">
+                    <Image Source="/WhatTimeIsIt;component/Resources/ic_keyboard_arrow_down_black_48dp.png" />
+                </Button>
             </StackPanel>
         </Grid>
         <!-- EndRegion -->
 
-        <!-- Region Row 2, Comparisons -->
-        <ListView Name="SourceConversions" Grid.Row="2" Grid.Column="0" ItemsSource="{Binding ConversionsAvailable}" SelectionChanged="ConversionsAvailable_SelectionChanged" />
-        <Grid Grid.Row="2" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        <!-- Region Row 3, Comparisons -->
+        <ListView Name="SourceConversions" Grid.Row="3" Grid.Column="0" ItemsSource="{Binding ConversionsAvailable}" SelectionChanged="ConversionsAvailable_SelectionChanged" />
+        <Grid Grid.Row="3" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center">
             <StackPanel Orientation="Vertical">
-                <Button Content="--&gt;" IsEnabled="{Binding ConversionAddEnabled}" Click="ConversionAdd_Click" />
-                <Button Content="&lt;--" IsEnabled="{Binding ConversionRemoveEnabled}" Click="ConversionRemove_Click" />
+                <Button IsEnabled="{Binding ConversionAddEnabled}" Click="ConversionAdd_Click" Background="#AAFFAA">
+                    <Image Source="/WhatTimeIsIt;component/Resources/ic_keyboard_arrow_right_black_48dp.png" />
+                </Button>
+                <Button IsEnabled="{Binding ConversionRemoveEnabled}" Click="ConversionRemove_Click" Background="#FFAAAA">
+                    <Image Source="/WhatTimeIsIt;component/Resources/ic_keyboard_arrow_left_black_48dp.png" />
+                </Button>
             </StackPanel>
         </Grid>
-        <ListView Grid.Row="2" Grid.Column="2" ItemsSource="{Binding Conversions}" SelectionChanged="Conversions_SelectionChanged" />
-        <Grid Grid.Row="2" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        <ListView Name="DestinationConversions" Grid.Row="3" Grid.Column="2" ItemsSource="{Binding Conversions}" SelectionChanged="DestinationConversions_SelectionChanged" />
+        <Grid Grid.Row="3" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Center">
             <StackPanel Orientation="Vertical">
-                <Button Content="/\" IsEnabled="{Binding ConversionUpEnabled}" />
-                <Button Content="\/" IsEnabled="{Binding ConversionDownEnabled}" />
+                <Button IsEnabled="{Binding ConversionUpEnabled}" Click="ConversionUp_Click">
+                    <Image Source="/WhatTimeIsIt;component/Resources/ic_keyboard_arrow_up_black_48dp.png" />
+                </Button>
+                <Button IsEnabled="{Binding ConversionDownEnabled}" Click="ConversionDown_Click">
+                    <Image Source="/WhatTimeIsIt;component/Resources/ic_keyboard_arrow_down_black_48dp.png" />
+                </Button>
             </StackPanel>
         </Grid>
         <!-- EndRegion -->

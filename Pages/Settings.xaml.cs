@@ -50,10 +50,11 @@ namespace WhatTimeIsIt.Pages
 
             Setup();
         }
-		#endregion
+        #endregion
 
-		#region Events
-		private void Cancel_Click(object sender, RoutedEventArgs e)
+        #region Events
+        #region Clocks
+        private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.instance.ToggleSettings();
         }
@@ -66,7 +67,7 @@ namespace WhatTimeIsIt.Pages
 
 		private void ClocksAvailable_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			ViewModel.ClockAddEnabled = ((ListView)e.Source).SelectedItems.Count > 0;
+            ViewModel.ClockAddEnabled = ((ListView)e.Source).SelectedItems.Count > 0;
 		}
 
 		private void ClockAdd_Click(object sender, RoutedEventArgs e)
@@ -83,15 +84,69 @@ namespace WhatTimeIsIt.Pages
 
 		private void ClockRemove_Click(object sender, RoutedEventArgs e)
 		{
+            if (DestinationClocks.SelectedItems.Count > 0)
+            {
+                List<string> ToRemove = new List<string>();
+                foreach (var OneItem in DestinationClocks.SelectedItems)
+                {
+                    ToRemove.Add(OneItem.ToString());
+                }
 
-		}
+                ToRemove.ForEach(item => ViewModel.Clocks.Remove(item));
+                ViewModel.Setup();
+            }
+        }
 
-		private void Clocks_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void DestinationClocks_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+            ViewModel.ClockRemoveEnabled = ViewModel.ClockUpEnabled = ViewModel.ClockDownEnabled = ((ListView)e.Source).SelectedItems.Count > 0;
+        }
 
-		}
+        private void ClockUp_Click(object sender, RoutedEventArgs e)
+        {
+            if (DestinationClocks.SelectedItems.Count > 0)
+            {
+                List<string> ToMove = new List<string>();
+                foreach (var OneItem in DestinationClocks.SelectedItems)
+                {
+                    ToMove.Add(OneItem.ToString());
+                }
 
-		private void ConversionsAvailable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+                ToMove.ForEach(item =>
+                {
+                    int Index = ViewModel.Clocks.IndexOf(item);
+                    if (Index > 0)
+                    {
+                        ViewModel.Clocks.Move(Index, Index - 1);
+                    }
+                });
+            }
+        }
+
+        private void ClockDown_Click(object sender, RoutedEventArgs e)
+        {
+            if (DestinationClocks.SelectedItems.Count > 0)
+            {
+                List<string> ToMove = new List<string>();
+                foreach (var OneItem in DestinationClocks.SelectedItems)
+                {
+                    ToMove.Add(OneItem.ToString());
+                }
+
+                ToMove.ForEach(item =>
+                {
+                    int Index = ViewModel.Clocks.IndexOf(item);
+                    if (Index < ViewModel.Clocks.Count - 1)
+                    {
+                        ViewModel.Clocks.Move(Index, Index + 1);
+                    }
+                });
+            }
+        }
+        #endregion
+
+        #region Conversions
+        private void ConversionsAvailable_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			ViewModel.ConversionAddEnabled = ((ListView)e.Source).SelectedItems.Count > 0;
 		}
@@ -108,22 +163,75 @@ namespace WhatTimeIsIt.Pages
 			}
 		}
 
-		private void ConversionRemove_Click(object sender, RoutedEventArgs e)
+        private void ConversionRemove_Click(object sender, RoutedEventArgs e)
+        {
+            if (DestinationConversions.SelectedItems.Count > 0)
+            {
+                List<string> ToRemove = new List<string>();
+                foreach (var OneItem in DestinationConversions.SelectedItems)
+                {
+                    ToRemove.Add(OneItem.ToString());
+                }
+
+                ToRemove.ForEach(item => ViewModel.Conversions.Remove(item));
+                ViewModel.Setup();
+            }
+        }
+
+        private void DestinationConversions_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+            ViewModel.ConversionRemoveEnabled = ViewModel.ConversionUpEnabled = ViewModel.ConversionDownEnabled = ((ListView)e.Source).SelectedItems.Count > 0;
+        }
 
-		}
+        private void ConversionUp_Click(object sender, RoutedEventArgs e)
+        {
+            if (DestinationConversions.SelectedItems.Count > 0)
+            {
+                List<string> ToMove = new List<string>();
+                foreach (var OneItem in DestinationConversions.SelectedItems)
+                {
+                    ToMove.Add(OneItem.ToString());
+                }
 
-		private void Conversions_SelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
+                ToMove.ForEach(item =>
+                {
+                    int Index = ViewModel.Conversions.IndexOf(item);
+                    if (Index > 0)
+                    {
+                        ViewModel.Conversions.Move(Index, Index - 1);
+                    }
+                });
+            }
+        }
 
-		}
-		#endregion
+        private void ConversionDown_Click(object sender, RoutedEventArgs e)
+        {
+            if (DestinationConversions.SelectedItems.Count > 0)
+            {
+                List<string> ToMove = new List<string>();
+                foreach (var OneItem in DestinationConversions.SelectedItems)
+                {
+                    ToMove.Add(OneItem.ToString());
+                }
 
-		#region Methods
-		public void Setup()
+                ToMove.ForEach(item =>
+                {
+                    int Index = ViewModel.Conversions.IndexOf(item);
+                    if (Index < ViewModel.Conversions.Count - 1)
+                    {
+                        ViewModel.Conversions.Move(Index, Index + 1);
+                    }
+                });
+            }
+        }
+        #endregion
+        #endregion
+
+        #region Methods
+        public void Setup()
         {
             ViewModel.Setup();
         }
-		#endregion
-	}
+        #endregion
+    }
 }
