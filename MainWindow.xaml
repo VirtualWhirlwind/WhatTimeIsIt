@@ -8,7 +8,7 @@
         Title="What Time Is It?"
         Width="525" Height="350"
         MinWidth="75" MinHeight="75"
-        Icon="Resources/ic_schedule_black_48dp.png">
+        Icon="Resources/Images/ic_schedule_black_48dp.png">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" MinHeight="30" />
@@ -17,9 +17,10 @@
         </Grid.RowDefinitions>
         
         <!-- Region Row 0, Clocks -->
-        <Viewbox HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Grid Name="ClocksHolder" />
-        </Viewbox>
+        <ScrollViewer x:Name="ClocksScroller" Grid.Row="0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <WrapPanel Name="ClocksHolder" Orientation="Horizontal" Width="{Binding ElementName=ClocksScroller, Path=ViewportWidth}" />
+        </ScrollViewer>
+        <TextBlock FontFamily="/WhatTimeIsIt;component/Resources/Fonts/#Orbitron" />
         <!-- EndRegion -->
 
         <!-- Region Row 1, Splitter -->
@@ -27,13 +28,16 @@
         <!-- EndRegion -->
 
         <!-- Region Row 2, Interactive Conversion -->
+        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+            <Grid Name="ConversionsHolder" />
+        </ScrollViewer>
         <!-- EndRegion -->
         
         <!-- Region Top Most -->
         <Grid Grid.Row="0" Grid.RowSpan="3">
             <Viewbox HorizontalAlignment="Right" VerticalAlignment="Top" Width="20" Height="20">
                 <Border Background="LightBlue" CornerRadius="15" MouseUp="Settings_MouseUp">
-                    <Image Source="Resources/ic_build_white_48dp.png" IsHitTestVisible="False" />
+                    <Image Source="Resources/Images/ic_build_white_48dp.png" IsHitTestVisible="False" />
                 </Border>
             </Viewbox>
 

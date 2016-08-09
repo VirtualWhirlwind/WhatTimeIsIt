@@ -324,10 +324,6 @@ namespace WhatTimeIsIt.ViewModels
 			{
 				instance = this;
 			}
-			else
-			{
-				throw new Exception("Settings already defined, this shouldnt happen.");
-			}
 		}
 		#endregion
 
@@ -341,22 +337,28 @@ namespace WhatTimeIsIt.ViewModels
 			TimezonesAvailable.ToList().ForEach(e => { if (!Conversions.Contains(e.ToString())) { ConversionsAvailable.Add(e); } });
 		}
 
-		public static SettingsViewModel Load()
+		public SettingsViewModel Load()
 		{
-			instance = null;
 			string SettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SETTINGS_FOLDER, SETTINGS_FILE);
 			try
 			{
 				if (File.Exists(SettingsPath))
 				{
-					return JsonConvert.DeserializeObject<SettingsViewModel>(File.ReadAllText(SettingsPath));
+					SettingsViewModel TmpData = JsonConvert.DeserializeObject<SettingsViewModel>(File.ReadAllText(SettingsPath));
+                    this.DateFormat = TmpData.DateFormat;
+                    this.DateOptions = TmpData.DateOptions;
+                    this.TimeFormat = TmpData.TimeFormat;
+                    this.TimeOptions = TmpData.TimeOptions;
+                    this.Clocks = TmpData.Clocks;
+                    this.Conversions = TmpData.Conversions;
 				}
 			}
 			catch //(Exception ex)
 			{
 				// TODO: Handle error
 			}
-			return new SettingsViewModel();
+
+            return this;
 		}
 
 		public void Save()

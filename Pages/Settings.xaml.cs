@@ -46,7 +46,7 @@ namespace WhatTimeIsIt.Pages
         {
             InitializeComponent();
 
-            ViewModel = viewModel ?? SettingsViewModel.Load();
+            ViewModel = viewModel ?? new SettingsViewModel().Load();
 
             Setup();
         }
