@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using WhatTimeIsIt.ViewModels;
 
 namespace WhatTimeIsIt
@@ -36,6 +37,12 @@ namespace WhatTimeIsIt
                 this.DataContext = value;
             }
         }
+
+        protected DispatcherTimer UpdateDisplay { get; set; }
+
+        protected List<TextBlock> Times { get; set; }
+
+        protected List<TextBlock> Dates { get; set; }
         #endregion
 
         #region Construct / Destruct
@@ -63,7 +70,7 @@ namespace WhatTimeIsIt
         {
             switch (propertyName)
             {
-                case "Clocks": UpdateClocks(); break;
+                case "Clocks": CreateClocks(); UpdateClocks(); break;
                 case "Conversions": UpdateConversions(); break;
             }
         }
@@ -74,10 +81,17 @@ namespace WhatTimeIsIt
         {
             instance = this;
 
+            Times = new List<TextBlock>();
+            Dates = new List<TextBlock>();
+
             SettingsHolder.Navigate(ViewModel.SettingsPage);
 
             ViewModel.PropertyChanged += (o, e) => PropertyChanged(e.PropertyName);
             ViewModel.TriggerUpdate();
+
+            UpdateDisplay = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 2) };
+            UpdateDisplay.Tick += (o, e) => UpdateClocks();
+            UpdateDisplay.Start();
         }
 
         public void ToggleSettings()
@@ -90,38 +104,66 @@ namespace WhatTimeIsIt
             }
         }
 
-        protected void UpdateClocks()
+        protected void CreateClocks()
         {
             ClocksHolder.Children.Clear();
+            Times.Clear();
+            Dates.Clear();
+
             foreach (string OneClock in ViewModel.Clocks)
             {
-                ClocksHolder.Children.Add(CreateOneClock(OneClock));
+                var TmpClock = CreateOneClock(OneClock);
+                if (TmpClock != null) { ClocksHolder.Children.Add(TmpClock); }
             }
         }
 
         protected UIElement CreateOneClock(string timezone)
         {
-            Grid Ret = new Grid() { Width = 150, Height = 80, Margin = new Thickness(5), Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEEEEE")) };
+            if (!ViewModel.TimezonesAvailable.ContainsKey(timezone)) { return null; }
 
-            Ret.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(20) });
+            Grid Ret = new Grid() { Width = 180, Height = 88, Margin = new Thickness(5, 5, 0, 0), Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEEEEE")) };
+
+            Ret.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(24) });
             Ret.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-            Ret.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(20) });
+            Ret.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(24) });
 
+            #region Row 0
             TextBlock TmpText = new TextBlock() { Text = timezone, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 5, 0, 0) };
-            TmpText.SetValue(Grid.RowProperty, 0);
-            Ret.Children.Add(TmpText);
+            Viewbox VB = new Viewbox() { Margin = new Thickness(2) };
+            VB.SetValue(Grid.RowProperty, 0);
+            VB.Child = TmpText;
+            Ret.Children.Add(VB);
+            #endregion
 
-            TmpText = new TextBlock() { Text = "10:00 AM", FontFamily = new FontFamily(new Uri("pack://application:,,,/"), "Resources/Fonts/#Orbitron"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Tag = timezone };
-            Viewbox VB = new Viewbox();
+            #region Row 1
+            TmpText = new TextBlock() { Text = "", FontFamily = new FontFamily(new Uri("pack://application:,,,/"), "Resources/Fonts/#Orbitron"), HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Tag = timezone };
+            VB = new Viewbox();
             VB.SetValue(Grid.RowProperty, 1);
             VB.Child = TmpText;
             Ret.Children.Add(VB);
+            Times.Add(TmpText);
+            #endregion
 
-            TmpText = new TextBlock() { Text = "2016-08-01", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 0, 5), Tag = timezone };
+            #region Row 2
+            TmpText = new TextBlock() { Text = "", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 0, 5), Tag = timezone };
             TmpText.SetValue(Grid.RowProperty, 2);
             Ret.Children.Add(TmpText);
+            Dates.Add(TmpText);
+            #endregion
 
             return Ret;
+        }
+
+        protected void UpdateClocks()
+        {
+            Times.ForEach(e => {
+                DateTime Now = TimeZoneInfo.ConvertTime(DateTime.Now, ViewModel.TimezonesAvailable[(string)e.Tag]);
+                e.Text = Now.ToString(ViewModel.TimeFormat);
+            });
+            Dates.ForEach(e => {
+                DateTime Now = TimeZoneInfo.ConvertTime(DateTime.Now, ViewModel.TimezonesAvailable[(string)e.Tag]);
+                e.Text = Now.ToString(ViewModel.DateFormat);
+            });
         }
 
         protected void UpdateConversions()

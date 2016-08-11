@@ -12,7 +12,8 @@ namespace WhatTimeIsIt.ViewModels
     public class MainWindowViewModel : BaseNotify
     {
         #region Fields
-        private bool _IsSettingsVisible;
+        protected bool _IsSettingsVisible = false;
+        protected string _EnteredDateTime = "";
         #endregion
 
         #region Properties
@@ -76,6 +77,61 @@ namespace WhatTimeIsIt.ViewModels
                 return SettingsPage.ViewModel.Conversions;
             }
         }
+
+        public Dictionary<string, TimeZoneInfo> TimezonesAvailable
+        {
+            get
+            {
+                return SettingsPage.ViewModel.TimezonesAvailable;
+            }
+        }
+
+        public string EnteredDateTime
+        {
+            get
+            {
+                return _EnteredDateTime;
+            }
+            set
+            {
+                if (_EnteredDateTime != value)
+                {
+                    _EnteredDateTime = value ?? "";
+                    OnPropertyChanged();
+                    OnPropertyChanged("UsableEnteredDateTime");
+                    OnPropertyChanged("UsableEnteredDateTimeDisplay");
+                    UpdateConversions();
+                }
+            }
+        }
+
+        public DateTime? UsableEnteredDateTime
+        {
+            get
+            {
+                DateTime? Ret = null;
+
+                DateTime TmpDate;
+                if (DateTime.TryParse(_EnteredDateTime, out TmpDate))
+                {
+                    Ret = TmpDate;
+                }
+
+                return Ret;
+            }
+        }
+
+        public string UsableEnteredDateTimeDisplay
+        {
+            get
+            {
+                if (UsableEnteredDateTime.HasValue)
+                {
+                    return UsableEnteredDateTime.Value.ToString(DateFormat + " " + TimeFormat);
+                }
+                return "No Date";
+            }
+        }
         #endregion
 
         #region Construct / Destruct
@@ -91,6 +147,11 @@ namespace WhatTimeIsIt.ViewModels
         {
             OnPropertyChanged("Clocks");
             OnPropertyChanged("Conversions");
+        }
+
+        public void UpdateConversions()
+        {
+
         }
         #endregion
     }

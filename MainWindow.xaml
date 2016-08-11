@@ -28,9 +28,19 @@
         <!-- EndRegion -->
 
         <!-- Region Row 2, Interactive Conversion -->
-        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-            <Grid Name="ConversionsHolder" />
-        </ScrollViewer>
+        <Grid Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBox Grid.Row="0" Text="{Binding EnteredDateTime, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0,0,150,0" />
+            <TextBlock Grid.Row="0" HorizontalAlignment="Right" VerticalAlignment="Center" Text="{Binding UsableEnteredDateTimeDisplay}" MaxWidth="145" Margin="0,0,2.5,0" />
+            
+            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Grid Name="ConversionsHolder" />
+            </ScrollViewer>
+        </Grid>
         <!-- EndRegion -->
         
         <!-- Region Top Most -->

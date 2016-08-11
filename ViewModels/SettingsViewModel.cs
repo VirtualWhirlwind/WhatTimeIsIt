@@ -141,7 +141,7 @@ namespace WhatTimeIsIt.ViewModels
 
 		#region UI Bindings
 		[JsonIgnore]
-		public ReadOnlyCollection<TimeZoneInfo> TimezonesAvailable { get; set; }
+		public Dictionary<string, TimeZoneInfo> TimezonesAvailable { get; set; }
 
 		[JsonIgnore]
 		public ObservableCollection<TimeZoneInfo> ClocksAvailable
@@ -318,7 +318,9 @@ namespace WhatTimeIsIt.ViewModels
 		#region Construct / Destruct
 		public SettingsViewModel()
 		{
-			TimezonesAvailable = TimeZoneInfo.GetSystemTimeZones();
+            TimezonesAvailable = new Dictionary<string, TimeZoneInfo>();
+			var TmpTimezonesAvailable = TimeZoneInfo.GetSystemTimeZones();
+            TmpTimezonesAvailable.ToList().ForEach(e => TimezonesAvailable.Add(e.DisplayName, e));
 
 			if (instance == null)
 			{
@@ -331,10 +333,10 @@ namespace WhatTimeIsIt.ViewModels
 		public void Setup()
 		{
 			ClocksAvailable.Clear();
-			TimezonesAvailable.ToList().ForEach(e => { if (!Clocks.Contains(e.ToString())) { ClocksAvailable.Add(e); } });
+			TimezonesAvailable.Values.ToList().ForEach(e => { if (!Clocks.Contains(e.ToString())) { ClocksAvailable.Add(e); } });
 
 			ConversionsAvailable.Clear();
-			TimezonesAvailable.ToList().ForEach(e => { if (!Conversions.Contains(e.ToString())) { ConversionsAvailable.Add(e); } });
+			TimezonesAvailable.Values.ToList().ForEach(e => { if (!Conversions.Contains(e.ToString())) { ConversionsAvailable.Add(e); } });
 		}
 
 		public SettingsViewModel Load()
