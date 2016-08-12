@@ -100,6 +100,7 @@ namespace WhatTimeIsIt.ViewModels
                     OnPropertyChanged();
                     OnPropertyChanged("UsableEnteredDateTime");
                     OnPropertyChanged("UsableEnteredDateTimeDisplay");
+                    OnPropertyChanged("ConversionHintVisibility");
                     UpdateConversions();
                 }
             }
@@ -130,6 +131,14 @@ namespace WhatTimeIsIt.ViewModels
                     return UsableEnteredDateTime.Value.ToString(DateFormat + " " + TimeFormat);
                 }
                 return "No Date";
+            }
+        }
+
+        public Visibility ConversionHintVisibility
+        {
+            get
+            {
+                return string.IsNullOrWhiteSpace(EnteredDateTime) ? Visibility.Visible : Visibility.Hidden;
             }
         }
         #endregion

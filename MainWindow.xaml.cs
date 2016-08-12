@@ -40,9 +40,11 @@ namespace WhatTimeIsIt
 
         protected DispatcherTimer UpdateDisplay { get; set; }
 
-        protected List<TextBlock> Times { get; set; }
+        protected List<TextBlock> TimeBlocks { get; set; }
 
-        protected List<TextBlock> Dates { get; set; }
+        protected List<TextBlock> DateBlocks { get; set; }
+
+        protected List<TextBlock> ConversionBlocks { get; set; }
         #endregion
 
         #region Construct / Destruct
@@ -71,7 +73,8 @@ namespace WhatTimeIsIt
             switch (propertyName)
             {
                 case "Clocks": CreateClocks(); UpdateClocks(); break;
-                case "Conversions": UpdateConversions(); break;
+                case "Conversions": CreateConversions(); UpdateConversions(); break;
+                case "UsableEnteredDateTime": UpdateConversions(); break;
             }
         }
         #endregion
@@ -81,8 +84,9 @@ namespace WhatTimeIsIt
         {
             instance = this;
 
-            Times = new List<TextBlock>();
-            Dates = new List<TextBlock>();
+            TimeBlocks = new List<TextBlock>();
+            DateBlocks = new List<TextBlock>();
+            ConversionBlocks = new List<TextBlock>();
 
             SettingsHolder.Navigate(ViewModel.SettingsPage);
 
@@ -107,8 +111,8 @@ namespace WhatTimeIsIt
         protected void CreateClocks()
         {
             ClocksHolder.Children.Clear();
-            Times.Clear();
-            Dates.Clear();
+            TimeBlocks.Clear();
+            DateBlocks.Clear();
 
             foreach (string OneClock in ViewModel.Clocks)
             {
@@ -122,7 +126,6 @@ namespace WhatTimeIsIt
             if (!ViewModel.TimezonesAvailable.ContainsKey(timezone)) { return null; }
 
             Grid Ret = new Grid() { Width = 180, Height = 88, Margin = new Thickness(5, 5, 0, 0), Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEEEEE")) };
-
             Ret.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(24) });
             Ret.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
             Ret.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(24) });
@@ -141,14 +144,14 @@ namespace WhatTimeIsIt
             VB.SetValue(Grid.RowProperty, 1);
             VB.Child = TmpText;
             Ret.Children.Add(VB);
-            Times.Add(TmpText);
+            TimeBlocks.Add(TmpText);
             #endregion
 
             #region Row 2
             TmpText = new TextBlock() { Text = "", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(0, 0, 0, 5), Tag = timezone };
             TmpText.SetValue(Grid.RowProperty, 2);
             Ret.Children.Add(TmpText);
-            Dates.Add(TmpText);
+            DateBlocks.Add(TmpText);
             #endregion
 
             return Ret;
@@ -156,19 +159,70 @@ namespace WhatTimeIsIt
 
         protected void UpdateClocks()
         {
-            Times.ForEach(e => {
+            TimeBlocks.ForEach(e => {
                 DateTime Now = TimeZoneInfo.ConvertTime(DateTime.Now, ViewModel.TimezonesAvailable[(string)e.Tag]);
                 e.Text = Now.ToString(ViewModel.TimeFormat);
             });
-            Dates.ForEach(e => {
+            DateBlocks.ForEach(e => {
                 DateTime Now = TimeZoneInfo.ConvertTime(DateTime.Now, ViewModel.TimezonesAvailable[(string)e.Tag]);
                 e.Text = Now.ToString(ViewModel.DateFormat);
             });
         }
 
+
+        protected void CreateConversions()
+        {
+            ConversionsHolder.Children.Clear();
+            ConversionsHolder.RowDefinitions.Clear();
+            ConversionBlocks.Clear();
+
+            int RowCount = 0;
+            foreach (string OneConversion in ViewModel.Conversions)
+            {
+                var TmpConversion = CreateOneConversion(OneConversion, RowCount);
+                if (TmpConversion != null)
+                {
+                    ConversionsHolder.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(30) });
+                    TmpConversion.ForEach(e => ConversionsHolder.Children.Add(e));
+                    RowCount++;
+                }
+            }
+        }
+
+        protected List<UIElement> CreateOneConversion(string timezone, int rowCount)
+        {
+            if (!ViewModel.TimezonesAvailable.ContainsKey(timezone)) { return null; }
+
+            List<UIElement> Ret = new List<UIElement>();
+
+            TextBlock TmpText = new TextBlock() { Text = timezone, HorizontalAlignment = HorizontalAlignment.Right, VerticalAlignment = VerticalAlignment.Center };
+            TmpText.SetValue(Grid.ColumnProperty, 0);
+            TmpText.SetValue(Grid.RowProperty, rowCount);
+            Ret.Add(TmpText);
+
+            //TmpText = new TextBlock() { Text = "", FontFamily = new FontFamily(new Uri("pack://application:,,,/"), "Resources/Fonts/#Orbitron"), FontWeight = FontWeights.Bold, Margin = new Thickness(5, 0, 0, 0), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, Tag = timezone };
+            TmpText = new TextBlock() { Text = "", FontWeight = FontWeights.Bold, Margin = new Thickness(5, 0, 0, 0), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center, Tag = timezone };
+            TmpText.SetValue(Grid.ColumnProperty, 1);
+            TmpText.SetValue(Grid.RowProperty, rowCount);
+            Ret.Add(TmpText);
+            ConversionBlocks.Add(TmpText);
+
+            return Ret;
+        }
+
         protected void UpdateConversions()
         {
-
+            ConversionBlocks.ForEach(e => {
+                if (ViewModel.UsableEnteredDateTime.HasValue)
+                {
+                    DateTime Now = TimeZoneInfo.ConvertTime(ViewModel.UsableEnteredDateTime.Value, ViewModel.TimezonesAvailable[(string)e.Tag]);
+                    e.Text = Now.ToString(ViewModel.DateFormat + " " + ViewModel.TimeFormat);
+                }
+                else
+                {
+                    e.Text = "";
+                }
+            });
         }
         #endregion
     }
