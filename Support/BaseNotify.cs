@@ -4,6 +4,9 @@ using System.Runtime.CompilerServices;
 
 namespace WhatTimeIsIt
 {
+    /// <summary>
+    /// Convenience base class for data binding
+    /// </summary>
     public class BaseNotify : INotifyPropertyChanged
     {
         #region INotifyPropertyChanged

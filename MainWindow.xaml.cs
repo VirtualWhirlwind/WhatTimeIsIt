@@ -56,9 +56,7 @@ namespace WhatTimeIsIt
         {
             InitializeComponent();
 
-            ViewModel = viewModel ?? new MainWindowViewModel();
-
-            SetUp();
+            SetUp(viewModel);
         }
         #endregion
 
@@ -80,24 +78,36 @@ namespace WhatTimeIsIt
         #endregion
 
         #region Methods
-        protected void SetUp()
+        /// <summary>
+        /// Initialize everything
+        /// </summary>
+        /// <param name="viewModel"></param>
+        protected void SetUp(MainWindowViewModel viewModel = null)
         {
             instance = this;
 
+            ViewModel = viewModel ?? new MainWindowViewModel();
+
+            // Initialize Properties
             TimeBlocks = new List<TextBlock>();
             DateBlocks = new List<TextBlock>();
             ConversionBlocks = new List<TextBlock>();
+            UpdateDisplay = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 2) };
 
+            // Configure Settings
             SettingsHolder.Navigate(ViewModel.SettingsPage);
 
+            // Wire up events
             ViewModel.PropertyChanged += (o, e) => PropertyChanged(e.PropertyName);
             ViewModel.TriggerUpdate();
 
-            UpdateDisplay = new DispatcherTimer() { Interval = new TimeSpan(0, 0, 2) };
             UpdateDisplay.Tick += (o, e) => UpdateClocks();
             UpdateDisplay.Start();
         }
 
+        /// <summary>
+        /// Show or hide the settings view
+        /// </summary>
         public void ToggleSettings()
         {
             ViewModel.IsSettingsVisible = !ViewModel.IsSettingsVisible;
@@ -108,6 +118,10 @@ namespace WhatTimeIsIt
             }
         }
 
+        #region Clocks / Top Section
+        /// <summary>
+        /// Dump and create the top section clocks
+        /// </summary>
         protected void CreateClocks()
         {
             ClocksHolder.Children.Clear();
@@ -121,6 +135,11 @@ namespace WhatTimeIsIt
             }
         }
 
+        /// <summary>
+        /// Creates one clock to be displayed in the top section
+        /// </summary>
+        /// <param name="timezone"></param>
+        /// <returns></returns>
         protected UIElement CreateOneClock(string timezone)
         {
             if (!ViewModel.TimezonesAvailable.ContainsKey(timezone)) { return null; }
@@ -157,6 +176,9 @@ namespace WhatTimeIsIt
             return Ret;
         }
 
+        /// <summary>
+        /// Using data binding, update the text fields that can change on the clocks
+        /// </summary>
         protected void UpdateClocks()
         {
             TimeBlocks.ForEach(e => {
@@ -168,8 +190,12 @@ namespace WhatTimeIsIt
                 e.Text = Now.ToString(ViewModel.DateFormat);
             });
         }
+        #endregion
 
-
+        #region Conversions / Bottom Section
+        /// <summary>
+        /// Dump and create the bottom section conversions
+        /// </summary>
         protected void CreateConversions()
         {
             ConversionsHolder.Children.Clear();
@@ -189,6 +215,12 @@ namespace WhatTimeIsIt
             }
         }
 
+        /// <summary>
+        /// Create one conversion to be displayed in the bottom section
+        /// </summary>
+        /// <param name="timezone"></param>
+        /// <param name="rowCount"></param>
+        /// <returns></returns>
         protected List<UIElement> CreateOneConversion(string timezone, int rowCount)
         {
             if (!ViewModel.TimezonesAvailable.ContainsKey(timezone)) { return null; }
@@ -210,6 +242,9 @@ namespace WhatTimeIsIt
             return Ret;
         }
 
+        /// <summary>
+        /// Using data binding, update the text fields that can change on the conversions
+        /// </summary>
         protected void UpdateConversions()
         {
             ConversionBlocks.ForEach(e => {
@@ -224,6 +259,7 @@ namespace WhatTimeIsIt
                 }
             });
         }
+        #endregion
         #endregion
     }
 }

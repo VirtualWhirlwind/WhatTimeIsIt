@@ -9,14 +9,17 @@ using System.Threading.Tasks;
 
 namespace WhatTimeIsIt.ViewModels
 {
+    /// <summary>
+    /// Dual purpose data binding target and file saving serializer/deserializer
+    /// </summary>
 	public class SettingsViewModel : BaseNotify
 	{
 		#region Constants
-		public const string SETTINGS_FOLDER = "WhatTimeIsIt";
-		public const string SETTINGS_FILE = "WhatTimeIsIt.jset";
+		public const string SETTINGS_FOLDER = "WhatTimeIsIt"; // Folder in "My Documents" that the settings will be saved
+		public const string SETTINGS_FILE = "WhatTimeIsIt.jset"; // File name where settings will be stored
 
-		public const string DATE_FORMAT = "M/d/yyyy";
-		public const string TIME_FORMAT = "h:mm tt";
+		public const string DATE_FORMAT = "M/d/yyyy"; // Default Date format
+		public const string TIME_FORMAT = "h:mm tt"; // Default Time format
 		#endregion
 
 		#region Fields
@@ -39,12 +42,13 @@ namespace WhatTimeIsIt.ViewModels
 		protected bool _ConversionRemoveEnabled = false;
 		protected bool _ConversionUpEnabled = false;
 		protected bool _ConversionDownEnabled = false;
-		#endregion
+        #endregion
 
-		#region Properties
-		public static SettingsViewModel instance { get; private set; }
-
-		public string DateFormat
+        #region Properties
+        /// <summary>
+        /// The Custom Date String format option to format dates in the application
+        /// </summary>
+        public string DateFormat
 		{
 			get
 			{
@@ -57,6 +61,9 @@ namespace WhatTimeIsIt.ViewModels
 			}
 		}
 
+        /// <summary>
+        /// The options displayed to the user for date formats
+        /// </summary>
 		public Dictionary<string, string> DateOptions
 		{
 			get
@@ -79,6 +86,9 @@ namespace WhatTimeIsIt.ViewModels
 			}
 		}
 
+        /// <summary>
+        /// The Custom Time String format option to format times in the application
+        /// </summary>
 		public string TimeFormat
 		{
 			get
@@ -92,6 +102,9 @@ namespace WhatTimeIsIt.ViewModels
 			}
 		}
 
+        /// <summary>
+        /// The options displayed to the user for time formats
+        /// </summary>
 		public Dictionary<string, string> TimeOptions
 		{
 			get
@@ -113,6 +126,9 @@ namespace WhatTimeIsIt.ViewModels
 			}
 		}
 
+        /// <summary>
+        /// The selected clocks to be displayed in the top portion of the main application window
+        /// </summary>
 		public ObservableCollection<string> Clocks
 		{
 			get
@@ -126,6 +142,9 @@ namespace WhatTimeIsIt.ViewModels
 			}
 		}
 
+        /// <summary>
+        /// The selected conversions to be displayed in the bottom portion of the main application window
+        /// </summary>
 		public ObservableCollection<string> Conversions
 		{
 			get
@@ -321,15 +340,13 @@ namespace WhatTimeIsIt.ViewModels
             TimezonesAvailable = new Dictionary<string, TimeZoneInfo>();
 			var TmpTimezonesAvailable = TimeZoneInfo.GetSystemTimeZones();
             TmpTimezonesAvailable.ToList().ForEach(e => TimezonesAvailable.Add(e.DisplayName, e));
-
-			if (instance == null)
-			{
-				instance = this;
-			}
 		}
 		#endregion
 
 		#region Methods
+        /// <summary>
+        /// Clear out and fill available options
+        /// </summary>
 		public void Setup()
 		{
 			ClocksAvailable.Clear();
@@ -339,6 +356,10 @@ namespace WhatTimeIsIt.ViewModels
 			TimezonesAvailable.Values.ToList().ForEach(e => { if (!Conversions.Contains(e.ToString())) { ConversionsAvailable.Add(e); } });
 		}
 
+        /// <summary>
+        /// Pull in the JSON serialized info fom the default file
+        /// </summary>
+        /// <returns></returns>
 		public SettingsViewModel Load()
 		{
 			string SettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SETTINGS_FOLDER, SETTINGS_FILE);
@@ -363,6 +384,9 @@ namespace WhatTimeIsIt.ViewModels
             return this;
 		}
 
+        /// <summary>
+        /// Save the necessary info to a serialized JSON file in the users "My Documents" folder
+        /// </summary>
 		public void Save()
 		{
 			string SettingsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), SETTINGS_FOLDER);

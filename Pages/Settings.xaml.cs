@@ -53,7 +53,6 @@ namespace WhatTimeIsIt.Pages
         #endregion
 
         #region Events
-        #region Clocks
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.instance.ToggleSettings();
@@ -65,7 +64,8 @@ namespace WhatTimeIsIt.Pages
             MainWindow.instance.ToggleSettings();
         }
 
-		private void ClocksAvailable_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        #region Clocks
+        private void ClocksAvailable_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
             ViewModel.ClockAddEnabled = ((ListView)e.Source).SelectedItems.Count > 0;
 		}

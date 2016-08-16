@@ -101,7 +101,6 @@ namespace WhatTimeIsIt.ViewModels
                     OnPropertyChanged("UsableEnteredDateTime");
                     OnPropertyChanged("UsableEnteredDateTimeDisplay");
                     OnPropertyChanged("ConversionHintVisibility");
-                    UpdateConversions();
                 }
             }
         }
@@ -152,15 +151,13 @@ namespace WhatTimeIsIt.ViewModels
         #endregion
 
         #region Methods
+        /// <summary>
+        /// Convenience method to trigger data binding
+        /// </summary>
         public void TriggerUpdate()
         {
             OnPropertyChanged("Clocks");
             OnPropertyChanged("Conversions");
-        }
-
-        public void UpdateConversions()
-        {
-
         }
         #endregion
     }
